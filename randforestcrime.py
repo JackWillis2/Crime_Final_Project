@@ -26,12 +26,13 @@ def randforest_param_selection(X, y, nfolds):
     return grid_search.best_params_
 
 df1=pd.read_csv("for_model.csv")
-
+df1=df1.dropna()
 
 target = df1.iloc[:,1]
 catenc = pd.factorize(target)
 target = catenc[0]
-data = df1.iloc[:,2:18]
+data = df1.iloc[:,2:19]
+
 data_training, data_test, target_training, target_test = train_test_split(data, target, test_size = 0.25, random_state = 25)
 print(data.shape)
 print(target.shape)
@@ -40,6 +41,12 @@ print(data_test.shape)
 print(target_training.shape)
 print(target_test.shape)
 
-randfor_best=randforest_param_selection(data_training,target_training,1)
-print(randfor_best)
+#randfor_best=randforest_param_selection(data_training,target_training,1)
+#print(randfor_best)
+randforest = RandomForestClassifier(bootstrap=True, max_depth= 90, max_features=3, min_samples_leaf=3, min_samples_split=12, n_estimators=300)
+randforest.fit(data_training,target_training)
+print(randforest.feature_importances_)
+prediction_randforest=randforest.predict(data_test)
+print("Random Forest:",randforest.score(data_test, target_test))
+
 
